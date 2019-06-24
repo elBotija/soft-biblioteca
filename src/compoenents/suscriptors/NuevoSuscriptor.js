@@ -1,19 +1,50 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
+import { firestoreConnect } from 'react-redux-firebase'
+import  Spinner  from '../layout/Spinner'
+import PropTypes from 'prop-types'
 
 class NuevoSuscriptor extends Component {
     state = { 
-        nombre: '',
-        apellido: '',
-        carrera: '',
-        codigo: ''
+        form: {
+            nombre: '',
+            apellido: '',
+            carrera: '',
+            codigo: ''
+        },
+        pending: false
+    }
+
+    _agregarSuscriptor = e => { 
+        e.preventDefault()
+        this.setState({ pending:true })
+        //extraer valores
+        const nuevoSuscriptor = { ...this.state.form }
+        // extraer firestore de props
+        const { firestore, history } = this.props
+        // guardar en base
+        firestore.add({collection: 'suscriptores'}, nuevoSuscriptor)
+        .then(()=>{
+            history.push('/suscriptores')
+        })
     }
 
     _handlerInput(e){
         e.preventDefault()
-        this.setState({
-            [e.target.name]: e.target.value
-        })
+        let form = { ...this.state.form }
+        form[e.target.name]= e.target.value
+        this.setState({ form })
+    }
+
+    _toggleSubmit(){
+        if(this.state.pending) return <Spinner/>
+        return(
+            <input 
+                type="submit"
+                value="Agregar Suscriptor"
+                className="btn btn-success"
+            />
+        )
     }
 
     render() { 
@@ -28,11 +59,11 @@ class NuevoSuscriptor extends Component {
                 <div className="col-12">
                     <h2>
                         <i className="fas fa-user-plus mr-2"></i>
-                        Nuevo Suscroptor
+                        Nuevo Suscriptor
                     </h2>
                     <div className="row justify-content-center">
                         <div className="col-md-8 mt-5">
-                            <form>
+                            <form onSubmit={this._agregarSuscriptor}>
                                 <div className="form-group">
                                     <label>Nombre:</label>
                                     <input 
@@ -77,11 +108,7 @@ class NuevoSuscriptor extends Component {
                                         onChange={(e)=>this._handlerInput(e)}
                                     />
                                 </div>
-                                <input 
-                                    type="submit"
-                                    value="Agregar Suscriptor"
-                                    className="btn btn-success"
-                                />
+                                { this._toggleSubmit() }
                             </form>
                         </div>
                     </div>
@@ -91,4 +118,8 @@ class NuevoSuscriptor extends Component {
     }
 }
  
-export default NuevoSuscriptor;
+NuevoSuscriptor.propTypes = {
+    firestore : PropTypes.object.isRequired
+}
+
+export default firestoreConnect()(NuevoSuscriptor);
