@@ -27,7 +27,6 @@ class PrestamoLibro extends Component {
             let resBusqueda = {}
             let noResultados = true
             if(!res.empty){
-                // hay resultados
                 resBusqueda = res.docs[0].data()
                 noResultados = false
             }
@@ -38,15 +37,39 @@ class PrestamoLibro extends Component {
         })
     }
     
+    _solicitarPrestamo = () => {
+        const suscriptor = {...this.state.resBusqueda}
+        suscriptor.fechaSolicitud = new Date().toLocaleDateString()
+        
+        const libroActualizado = this.props.libro
+        libroActualizado.prestados.push( suscriptor )
+    
+        const { firestore, history } = this.props
+
+        firestore.update({
+            collection: 'libros',
+            doc: libroActualizado.id
+        }, libroActualizado).then(history.push('/'))
+    }
+
     _renderPrestamo = () => {
         const { resBusqueda } = this.state
         if(resBusqueda.nombre){
+            const { libro } = this.props
+            const tieneCopia = libro.prestados.find(l => {
+                let res
+                if(l.id === resBusqueda.id){ res = l }
+                return res
+            }) || []
+            debugger
+            const noDisponible = (this.props.libro.prestados && (libro.prestados.length === libro.existencia))  || tieneCopia.length !== 0 ? true : false
             return (
                 <React.Fragment>
                     <FichaSuscriptor alumno={resBusqueda}/>
+                    
                     <button type="button"
-                        className="btn btn-primary btn-block"
-                        onClick={this.solicitarPrestamo}>
+                        className={`btn btn-block ${noDisponible ? "btn-light":'btn-primary'}`}
+                        onClick={noDisponible ? '' : this._solicitarPrestamo}>
                             Solicitar Prestamo
                     </button>
                 </React.Fragment>
