@@ -16,7 +16,7 @@ class NuevoLibro extends Component {
 
     _agregarLibro = e => {
         e.preventDefault()
-        let nuevoLibro = {... this.state}
+        let nuevoLibro = {...this.state}
         nuevoLibro.prestados = []
 
         const { firestore, history } = this.props
