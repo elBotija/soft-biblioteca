@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "fecbfea858a42654cda33394fd1f9ed6",
+    "revision": "ee04e0293ea03f9f84b41540a38413f0",
     "url": "/soft-biblioteca/index.html"
   },
   {
-    "revision": "dfe3bd03fe6fbc62299c",
+    "revision": "31052e539ac636060b85",
     "url": "/soft-biblioteca/static/css/main.b051aae4.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/soft-biblioteca/static/js/2.f6a39727.chunk.js"
   },
   {
-    "revision": "dfe3bd03fe6fbc62299c",
-    "url": "/soft-biblioteca/static/js/main.e1009306.chunk.js"
+    "revision": "31052e539ac636060b85",
+    "url": "/soft-biblioteca/static/js/main.2bc8b66b.chunk.js"
   },
   {
     "revision": "5d8a8c77e038e30f8b35",
