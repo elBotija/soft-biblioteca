@@ -8,6 +8,8 @@ import Spinner from '../layout/Spinner'
 
 import FichaSuscriptor from '../suscriptors/FichaSuscriptor'
 
+import { buscarUsuario } from '../../actions/buscarUsuarioActions'
+
 class PrestamoLibro extends Component {
     state = { 
         resBusqueda:{},
@@ -20,7 +22,7 @@ class PrestamoLibro extends Component {
         e.preventDefault()
         const busqueda = this.busquedaRef.current.value
 
-        const { firestore } = this.props
+        const { firestore, buscarUsuario } = this.props
         const coleccion = firestore.collection('suscriptores')
         const consulta = coleccion.where('codigo','==',busqueda).get()
         consulta.then(res => {
@@ -30,19 +32,20 @@ class PrestamoLibro extends Component {
                 resBusqueda = res.docs[0].data()
                 noResultados = false
             }
+            buscarUsuario(resBusqueda)
             this.setState({
-                resBusqueda,
                 noResultados
             })
         })
     }
     
     _solicitarPrestamo = () => {
-        const suscriptor = {...this.state.resBusqueda}
-        suscriptor.fechaSolicitud = new Date().toLocaleDateString()
+        const usuario = this.props.usuario
+        usuario.fechaSolicitud = new Date().toLocaleDateString()
         
-        const libroActualizado = this.props.libro
-        libroActualizado.prestados.push( suscriptor )
+
+        const libroActualizado = {...this.props.libro}
+        libroActualizado.prestados = [...libroActualizado.prestados, usuario] 
     
         const { firestore, history } = this.props
 
@@ -53,19 +56,19 @@ class PrestamoLibro extends Component {
     }
 
     _renderPrestamo = () => {
-        const { resBusqueda } = this.state
-        if(resBusqueda.nombre){
+        const { usuario } = this.props
+        if(usuario.nombre){
             const { libro } = this.props
             const tieneCopia = libro.prestados.find(l => {
                 let res
-                if(l.id === resBusqueda.id){ res = l }
+                if(l.id === usuario.id){ res = l }
                 return res
             }) || []
             debugger
             const noDisponible = (this.props.libro.prestados && (libro.prestados.length === libro.existencia))  || tieneCopia.length !== 0 ? true : false
             return (
                 <React.Fragment>
-                    <FichaSuscriptor alumno={resBusqueda}/>
+                    <FichaSuscriptor alumno={usuario}/>
                     
                     <button type="button"
                         className={`btn btn-block ${noDisponible ? "btn-light":'btn-primary'}`}
@@ -73,6 +76,14 @@ class PrestamoLibro extends Component {
                             Solicitar Prestamo
                     </button>
                 </React.Fragment>
+            )
+        }
+    }
+
+    _noResultados(){
+        if(this.state.noResultados){
+            return(
+                <div className="alert alert-danger text-center font-wight-bold">No hay resultados para ese codigo.</div>
             )
         }
     }
@@ -108,6 +119,7 @@ class PrestamoLibro extends Component {
                                     </div>
                                 </form>
                                 {this._renderPrestamo()}
+                                {this._noResultados()}
                             </div>
                         </div>
                     </div>
@@ -130,7 +142,8 @@ export default compose(
             doc: props.match.params.id
         }
     ]),
-    connect(({firestore: { ordered }}, props ) => ({
-        libro: ordered.libro && ordered.libro[0]
-    }))
+    connect(({firestore: { ordered }, usuario}, props ) => ({
+        libro: ordered.libro && ordered.libro[0],
+        usuario: usuario
+    }), { buscarUsuario })
 )(PrestamoLibro)
