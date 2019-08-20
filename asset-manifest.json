@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/soft-biblioteca/static/css/main.b051aae4.chunk.css",
+    "main.js": "/soft-biblioteca/static/js/main.e1009306.chunk.js",
+    "main.js.map": "/soft-biblioteca/static/js/main.e1009306.chunk.js.map",
+    "runtime~main.js": "/soft-biblioteca/static/js/runtime~main.82bea215.js",
+    "runtime~main.js.map": "/soft-biblioteca/static/js/runtime~main.82bea215.js.map",
+    "static/js/2.f6a39727.chunk.js": "/soft-biblioteca/static/js/2.f6a39727.chunk.js",
+    "static/js/2.f6a39727.chunk.js.map": "/soft-biblioteca/static/js/2.f6a39727.chunk.js.map",
+    "index.html": "/soft-biblioteca/index.html",
+    "precache-manifest.200be6d58a8bca18c33c4f258a8a0885.js": "/soft-biblioteca/precache-manifest.200be6d58a8bca18c33c4f258a8a0885.js",
+    "service-worker.js": "/soft-biblioteca/service-worker.js",
+    "static/css/main.b051aae4.chunk.css.map": "/soft-biblioteca/static/css/main.b051aae4.chunk.css.map"
+  }
+}
